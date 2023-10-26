@@ -1,0 +1,5 @@
+output: internal/adapters/http/generate/oapi-codgen.go
+package: generate
+generate:
+  - types
+  - chi-server

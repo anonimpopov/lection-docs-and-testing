@@ -1,0 +1,131 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "Signed token protects our admin endpoints",
+        "title": "Example for lecture",
+        "contact": {
+            "name": "API Support",
+            "url": "http://www.swagger.io/support",
+            "email": "support@swagger.io"
+        },
+        "version": "1.0.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/auth/v1",
+    "paths": {
+        "/login": {
+            "post": {
+                "description": "Validate credentials, return access and refresh tokens.",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Generate auth tokens.",
+                "operationId": "Login",
+                "parameters": [
+                    {
+                        "description": "user credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/http.User"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/validate": {
+            "post": {
+                "security": [
+                    {
+                        "Auth": []
+                    }
+                ],
+                "description": "Validate tokens and refresh tokens if refresh token is valid",
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Validate tokens",
+                "operationId": "Validate",
+                "parameters": [
+                    {
+                        "description": "user tokens",
+                        "name": "tokens",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/http.TokenPair"
+                        }
+                    }
+                ],
+                "responses": {
+                    "400": {
+                        "description": "bad request",
+                        "schema": {
+                            "$ref": "#/definitions/http.TokenPair"
+                        }
+                    },
+                    "403": {
+                        "description": "forbidden",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "internal error",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "http.TokenPair": {
+            "type": "object",
+            "properties": {
+                "authToken": {
+                    "type": "string"
+                },
+                "refreshToken": {
+                    "type": "string"
+                }
+            }
+        },
+        "http.User": {
+            "type": "object",
+            "properties": {
+                "login": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "Auth": {
+            "type": "basic"
+        }
+    }
+}

@@ -1,0 +1,84 @@
+basePath: /auth/v1
+definitions:
+  http.TokenPair:
+    properties:
+      authToken:
+        type: string
+      refreshToken:
+        type: string
+    type: object
+  http.User:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: Signed token protects our admin endpoints
+  title: Example for lecture
+  version: 1.0.0
+paths:
+  /login:
+    post:
+      description: Validate credentials, return access and refresh tokens.
+      operationId: Login
+      parameters:
+      - description: user credentials
+        in: body
+        name: credentials
+        schema:
+          $ref: '#/definitions/http.User'
+      responses:
+        "200":
+          description: ""
+        "403":
+          description: forbidden
+          schema:
+            type: string
+        "500":
+          description: internal error
+          schema:
+            type: string
+      summary: Generate auth tokens.
+      tags:
+      - auth
+  /validate:
+    post:
+      description: Validate tokens and refresh tokens if refresh token is valid
+      operationId: Validate
+      parameters:
+      - description: user tokens
+        in: body
+        name: tokens
+        schema:
+          $ref: '#/definitions/http.TokenPair'
+      responses:
+        "400":
+          description: bad request
+          schema:
+            $ref: '#/definitions/http.TokenPair'
+        "403":
+          description: forbidden
+          schema:
+            type: string
+        "500":
+          description: internal error
+          schema:
+            type: string
+      security:
+      - Auth: []
+      summary: Validate tokens
+      tags:
+      - auth
+schemes:
+- http
+securityDefinitions:
+  Auth:
+    type: basic
+swagger: "2.0"

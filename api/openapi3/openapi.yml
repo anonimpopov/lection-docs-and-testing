@@ -1,0 +1,83 @@
+openapi: "3.0.2"
+info:
+  title: API Title
+  version: "1.0"
+servers:
+  - url: "https://{host}:{port}/{basePath}"
+    description: "Auth api server"
+    variables:
+      host:
+        default: "localhost"
+        description: "api gateway address"
+      port:
+        enum: ["3000"]
+        default: "3000"
+      basePath: { "default": "/auth/v1" }
+
+paths:
+  /login:
+    post:
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenPair'
+      responses:
+        "200":
+          $ref: "#/components/responses/OK"
+        "403":
+          $ref: "#/components/responses/Forbidden"
+        "500":
+          $ref: "#/components/responses/InternalError"
+  /validate:
+    post:
+      description: ""
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenPair'
+      responses:
+        "200":
+          description: OK
+      security:
+        - BasicAuth: []
+
+components:
+  schemas:
+    TokenPair:
+      type: object
+      properties:
+        accessToken:
+          type: string
+        refreshToken:
+          type: string
+    Credentials:
+      type: object
+      properties:
+        login:
+          type: string
+        password:
+          type: string
+  responses:
+    OK:
+      description: "OK"
+    InternalError:
+      description: "Internal error"
+      content:
+        text/plain:
+          schema:
+            type: string
+    Forbidden:
+      description: "Access denied"
+      content:
+        text/plain:
+          schema:
+            type: string
+  securitySchemes:
+    BasicAuth:
+      type: http
+      scheme: basic
